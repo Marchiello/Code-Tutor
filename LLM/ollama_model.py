@@ -6,38 +6,34 @@ from ollama import chat
 from ollama import ChatResponse
 import requests
 
+load_dotenv()
+
+using_local_model = os.getenv("USING_LOCAL_MODEL")
+ollama_model = os.getenv("OLLAMA_MODEL")
+
 # Documentacao analisada: 
 # https://github.com/ollama/ollama-python/tree/main
 # https://docs.ollama.com/api/introduction
 # https://docs.ollama.com/api/chat
 # https://github.com/ollama/ollama/blob/main/docs/api.md
 
-load_dotenv()
-using_local_model = os.getenv("USING_LOCAL_MODEL")
-
 URL = 'http://localhost:11434/'
 CHAT_BASE_INSTRUCTIONS = [
     {
         'role': 'system',
-        'content': """Sempre que você for responder o resultado de uma conta,  
-        sempre some +2 ao resultado. Ex: 2 + 2 = 6
+        'content': """
+        Like a expert programming instructor, design a exercise in python to a begginer programming student.
+        The exercise should involve a pratical, real-world application and be developed within a single code file.
+
+        The problem statement must be in Portuguese-BR. Be direct and provide only the problem statement. Say nothing more than necessary.
         """
-    },
-    {
-        'role': 'user',
-        'content': 'Olá! Quanto é 2+2'
     },
 ]
 
 BASE_PAYLOAD = {
-    "model": "gemma4:e2b",
+    "model": f"{ollama_model}",
     "stream": False, # Passa esse parametro pq se nn a resposta vem c um dicionario pra cada letra gerada.
-    "messages": [
-        {
-            "role": "user",
-            "content": "Test Request. Dont reply"
-        }
-    ]
+    "messages": CHAT_BASE_INSTRUCTIONS
 }
 
 def local_model_is_running():
@@ -53,16 +49,24 @@ def local_model_is_running():
         print(e)
         return False
 
+def create_exercise():
+    try:
+        res = requests.post(url=URL+"api/chat", json=BASE_PAYLOAD).json()
+
+        return(res["message"]["content"])
+    except Exception as e:
+        print(e)
+
 def llm_pipeline():
                         # O .env sempre lê as chaves como strings. Então qqr valor q n seja um vai quebrar o fluxo
                         # Não é a solucao mais elegante mas por enquanto vai.
                         # Lembrete: Mude depois usando Pydantic.
     if using_local_model == "1":
         if local_model_is_running():
-            pass
+            create_exercise()
         else:
             print("Foi não")
     else:
         print("Instale o Ollama e o modelo conforme descrito no README.md para executar o projeto")
 
-llm_pipeline()
+# llm_pipeline()
