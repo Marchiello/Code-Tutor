@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from LLM.ollama_model import create_exercise
+from src.llm.ollama_model import create_exercise
 
 # Documentacao Analisada:
 # https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI
@@ -13,6 +13,6 @@ app = FastAPI(
 async def root():
     return {"status": "Active"}
 
-@app.get("/get_exercise")
+@app.get("/new_exercise")
 async def new_exercise(language: str = "Python", exercise_type: str = "Programming Logic"):
-    return create_exercise(language, exercise_type)
+    await create_exercise(language, exercise_type)

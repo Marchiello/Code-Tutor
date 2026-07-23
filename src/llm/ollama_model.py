@@ -8,8 +8,12 @@ import requests
 
 load_dotenv()
 
+# ---------- Atribuição das variáveis de ambiente da LLM
+
 using_local_model = os.getenv("USING_LOCAL_MODEL")
 ollama_model = os.getenv("OLLAMA_MODEL")
+
+# ---------- 
 
 # Documentacao analisada: 
 # https://github.com/ollama/ollama-python/tree/main
@@ -33,12 +37,12 @@ def local_model_is_running():
         print(e)
         return False
 
-def create_exercise(language: str = "Python", exercise_type: str = "Programming Logic"):
+async def create_exercise(language: str = "Python", exercise_type: str = "Programming Logic"):
+    """Cria um novo exercício com base nos argumentos recebidos."""
 
     if not local_model_is_running:
         return {"status": "500", "content": "Erro ao criar exercício: O Ollama não está rodando."}
 
-    """Cria um novo exercício com base nos argumentos recebidos."""
 
     proggraming_language = language
     exercise_t = exercise_type
