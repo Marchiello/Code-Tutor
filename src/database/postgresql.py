@@ -11,18 +11,22 @@ load_dotenv()
 # Documentação Analisada:
 # https://pypi.org/project/psycopg2/
 #   https://www.psycopg.org/docs/install.html
+#   https://github.com/psycopg/psycopg2
 
 # ---------- Atribuição das variáveis de ambiente do BD
 
 db_name = os.getenv("DATABASE_NAME") 
 db_user = os.getenv("DATABASE_USER")
+db_password = os.getenv("DATABASE_PASSWORD")
 
 # ----------
 
 database = psycopg2.connect(
     f"""
+    host=localhost
     dbname={db_name}
     user={db_user}
+    password={db_password}
     """
 )
 
@@ -38,7 +42,7 @@ async def get_exercises():
     
     try:
         exercises = cursor.execute("SELECT * FROM exercises")
-        if exercises:
+        if exercises is None:
             return exercises
     
         else:

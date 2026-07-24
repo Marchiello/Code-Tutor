@@ -1,5 +1,7 @@
 from fastapi import FastAPI
+
 from src.llm.ollama_model import create_exercise
+from src.database import postgresql
 
 # Documentacao Analisada:
 # https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI
@@ -15,4 +17,12 @@ async def root():
 
 @app.get("/new_exercise")
 async def new_exercise(language: str = "Python", exercise_type: str = "Programming Logic"):
-    await create_exercise(language, exercise_type)
+    create_exercise(language, exercise_type)
+
+@app.post("/save_exercise")
+async def save_exercise(statement, resolution):
+    await postgresql.save_exercise(statement=statement, solution=resolution)
+
+@app.get("/get_exercises")
+async def get_exercises():
+    await postgresql.get_exercises()
