@@ -6,6 +6,7 @@ from src.database import postgresql
 # Documentacao Analisada:
 # https://fastapi.tiangolo.com/reference/fastapi/#fastapi.FastAPI
 # https://fastapi.tiangolo.com/tutorial/first-steps/
+# https://www.youtube.com/watch?v=tGD3653BrZ8 - Explicação prática sobre await e async
 
 app = FastAPI(
     title="API do Code-Tutor"
